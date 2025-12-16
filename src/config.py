@@ -79,6 +79,27 @@ def validate_required() -> list[str]:
 
     return errors
 
+
+def diagnostic_flags() -> dict[str, str]:
+    """Return human-readable flags for common startup issues."""
+
+    errors = validate_required()
+    joined = ",".join(errors)
+
+    flags = {
+        "discord_token": "set" if "DISCORD_TOKEN is missing" not in joined else "missing",
+        "discord_client_id": "set" if "DISCORD_CLIENT_ID is missing" not in joined else "missing",
+        "ptero_base_url": "set" if "PTERO_BASE_URL is missing" not in joined else "missing",
+        "ptero_application_api_key": "set"
+        if "PTERO_APPLICATION_API_KEY is missing" not in joined
+        else "missing",
+        "privileged_intents": "enabled" if USE_PRIVILEGED_INTENTS else "disabled",
+        "guild_scoped_sync": "enabled" if DISCORD_GUILD_ID else "global",
+        "db_path": PTERO_BOT_DB or "bot.db",
+    }
+
+    return flags
+
 __all__ = [
     "DISCORD_TOKEN",
     "DISCORD_CLIENT_ID",
@@ -90,4 +111,5 @@ __all__ = [
     "ADDITIONAL_ALLOWED_ROLE_IDS",
     "as_dict",
     "validate_required",
+    "diagnostic_flags",
 ]

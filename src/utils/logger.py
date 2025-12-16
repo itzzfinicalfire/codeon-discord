@@ -5,12 +5,14 @@ from typing import Any
 REDACT_KEYS = {"PTERO_APPLICATION_API_KEY", "DISCORD_TOKEN"}
 
 
-def _redact(value: Any) -> Any:
-    if not isinstance(value, str):
-        return value
-    if any(secret in value for secret in os.environ.get("PTERO_APPLICATION_API_KEY", "")):
+def _mask_secret(value: str) -> str:
+    """Return a partially masked version of a secret value."""
+
+    if not value:
         return "***redacted***"
-    return value
+    if len(value) <= 8:
+        return "***redacted***"
+    return f"{value[:4]}...{value[-4:]}"
 
 
 def get_logger(name: str = "ptero-bot") -> logging.Logger:
@@ -31,7 +33,7 @@ def redact_dict(data: dict) -> dict:
     redacted = {}
     for key, value in data.items():
         if key in REDACT_KEYS:
-            redacted[key] = "***redacted***"
+            redacted[key] = _mask_secret(value) if isinstance(value, str) else "***redacted***"
         else:
-            redacted[key] = _redact(value)
+            redacted[key] = value
     return redacted

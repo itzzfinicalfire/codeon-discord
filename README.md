@@ -55,6 +55,7 @@ docker run --env-file .env -v $(pwd)/bot.db:/app/bot.db ptero-bot
 - `/ptero ping` – health check
 - `/ptero whoami` – API scope info
 - `/ptero config` – set audit channel & default ephemerality
+- `/ptero diagnostics` – show config readiness (tokens, intents, sync scope)
 - `/servers list|info|create|update|suspend|unsuspend|reinstall|delete|set-owner|allocations|databases`
 - `/users list|info|create|update|delete`
 - `/nodes list|info|create|update|delete|allocations`
@@ -79,6 +80,8 @@ Every write/delete action posts an embed with actor, action, and target IDs.
 
 ## Slash command registration
 The bot automatically syncs commands. Provide `DISCORD_GUILD_ID` during development for rapid iteration; omit it in production for global sync.
+
+If the bot appears unresponsive after launching, run `/ptero diagnostics` (ephemeral) to confirm tokens, API keys, intents, and command sync scope are set correctly.
 
 ## Notes
 - Sensitive tokens are never logged.

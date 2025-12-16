@@ -3,6 +3,7 @@ from __future__ import annotations
 import discord
 from discord import app_commands
 
+from src import config
 from src.db.store import ConfigStore
 from src.ptero.client import PterodactylClient
 from src.rbac.roles import infer_required_roles, ensure_has_role
@@ -22,6 +23,11 @@ class PteroAdmin(app_commands.Group):
                 {"display": "/ptero whoami", "override": "ptero.whoami", "roles": infer_required_roles(write=False)},
                 {"display": "/ptero config", "override": "ptero.config", "roles": infer_required_roles(write=True)},
                 {"display": "/ptero help", "override": "ptero.help", "roles": infer_required_roles(write=False)},
+                {
+                    "display": "/ptero diagnostics",
+                    "override": "ptero.diagnostics",
+                    "roles": infer_required_roles(write=False),
+                },
             ],
             "servers": [
                 {"display": "/servers list", "override": "servers.list", "roles": infer_required_roles(write=False)},
@@ -102,6 +108,47 @@ class PteroAdmin(app_commands.Group):
                 "Rate limit": meta.get("pagination", {}).get("total") or "unknown",
             },
         )
+        await interaction.response.send_message(embed=embed, ephemeral=True)
+
+    @app_commands.command(name="diagnostics", description="Show setup and config status")
+    async def diagnostics(self, interaction: discord.Interaction):
+        await ensure_has_role(
+            interaction,
+            required_roles=infer_required_roles(write=False),
+            command_name="ptero.diagnostics",
+            store=self.store,
+        )
+
+        flags = config.diagnostic_flags()
+        errors = config.validate_required()
+
+        status_map = {
+            "discord_token": "Discord token",
+            "discord_client_id": "Discord client ID",
+            "ptero_base_url": "Pterodactyl base URL",
+            "ptero_application_api_key": "Pterodactyl application API key",
+        }
+
+        status_fields: dict[str, str] = {}
+        for key, label in status_map.items():
+            status = flags.get(key, "missing")
+            icon = "✅" if status == "set" else "⚠️"
+            status_fields[label] = f"{icon} {status}"
+
+        status_fields["Privileged intents"] = (
+            "✅ enabled (toggle in Discord Developer Portal too)"
+            if flags.get("privileged_intents") == "enabled"
+            else "ℹ️ disabled (enable if you need member/presence data)"
+        )
+        status_fields["Command sync scope"] = (
+            f"Guild-scoped: {config.DISCORD_GUILD_ID}" if config.DISCORD_GUILD_ID else "Global"
+        )
+        status_fields["Config DB path"] = flags.get("db_path", "bot.db")
+
+        embed = summary_embed("Bot diagnostics", status_fields)
+        if errors:
+            embed.set_footer(text="Resolve ⚠️ items above and restart the bot.")
+
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
     async def build_help_embed(self) -> discord.Embed:
