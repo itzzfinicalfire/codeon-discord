@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 import asyncio
-import os
 from typing import Any, Dict, List, Optional
 
 import httpx
 from pydantic import BaseModel
 
+from src import config
 from utils.errors import PteroAPIError
 from utils.logger import get_logger
 
@@ -102,10 +102,12 @@ class PterodactylClient:
 
 class PteroFactory:
     def __init__(self):
-        base_url = os.environ.get("PTERO_BASE_URL")
-        api_key = os.environ.get("PTERO_APPLICATION_API_KEY")
+        base_url = config.PTERO_BASE_URL
+        api_key = config.PTERO_APPLICATION_API_KEY
         if not base_url or not api_key:
-            raise RuntimeError("Missing PTERO_BASE_URL or PTERO_APPLICATION_API_KEY env vars")
+            raise RuntimeError(
+                "Missing PTERO_BASE_URL or PTERO_APPLICATION_API_KEY in config.py or environment"
+            )
         self.client = PterodactylClient(base_url=base_url, api_key=api_key)
 
     def get_client(self) -> PterodactylClient:

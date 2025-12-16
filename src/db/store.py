@@ -1,10 +1,11 @@
 import asyncio
-import os
 from typing import Dict, List, Optional
 
 import aiosqlite
 
-DB_PATH = os.environ.get("PTERO_BOT_DB", "bot.db")
+from src import config
+
+DB_PATH = config.PTERO_BOT_DB
 
 
 class ConfigStore:

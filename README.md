@@ -15,16 +15,21 @@ A production-ready Discord bot for Pterodactyl **Application API** administratio
    ```bash
    pip install -r requirements.txt
    ```
-3. Set environment variables (never hardcode secrets):
-   ```bash
-   export DISCORD_TOKEN=...
-   export DISCORD_CLIENT_ID=...
-   export DISCORD_GUILD_ID=...   # optional for faster sync
-   export PTERO_BASE_URL=https://panel.example.com
-   export PTERO_APPLICATION_API_KEY=...
-   export PTERO_BOT_DB=bot.db      # optional sqlite path
+3. Configure credentials in `src/config.py` (placeholders are provided) or set environment variables with the same names. No `.env` file is required:
+   ```python
+   # src/config.py
+   DISCORD_TOKEN = "your_discord_bot_token"
+   DISCORD_CLIENT_ID = "your_discord_client_id"
+   DISCORD_GUILD_ID = ""  # optional
+   PTERO_BASE_URL = "https://panel.example.com"
+   PTERO_APPLICATION_API_KEY = "your_application_api_key"
+   PTERO_BOT_DB = "bot.db"  # optional sqlite path
    ```
-4. Run the bot:
+4. Verify configuration loads correctly:
+   ```bash
+   python test_config.py
+   ```
+5. Run the bot:
    ```bash
    python -m src.bot
    ```

@@ -1,14 +1,12 @@
 from __future__ import annotations
 
 import asyncio
-import os
 import signal
 import sys
 from typing import Optional
 
 import discord
 from discord.ext import commands
-from dotenv import load_dotenv
 
 from commands.allocations import Allocations
 from commands.dbhosts import DatabaseHosts
@@ -19,11 +17,11 @@ from commands.ptero import PteroAdmin
 from commands.serverdb import ServerDatabases
 from commands.servers import Servers
 from commands.users import Users
+from src import config
 from db.store import ConfigStore
 from ptero.client import PteroFactory
 from utils.logger import get_logger
 
-load_dotenv()
 logger = get_logger(__name__)
 
 
@@ -54,7 +52,7 @@ class PteroBot(commands.Bot):
 
     async def setup_hook(self) -> None:
         await self.store.init()
-        guild_id = os.environ.get("DISCORD_GUILD_ID")
+        guild_id = config.DISCORD_GUILD_ID
         if guild_id:
             guild = discord.Object(int(guild_id))
             await self.tree.sync(guild=guild)
@@ -65,15 +63,15 @@ class PteroBot(commands.Bot):
 
 
 async def main() -> None:
-    token = os.environ.get("DISCORD_TOKEN")
-    client_id = os.environ.get("DISCORD_CLIENT_ID")
+    token = config.DISCORD_TOKEN
+    client_id = config.DISCORD_CLIENT_ID
     if not token or not client_id:
-        logger.error("Missing DISCORD_TOKEN or DISCORD_CLIENT_ID")
+        logger.error("Missing DISCORD_TOKEN or DISCORD_CLIENT_ID in config.py or environment")
         sys.exit(1)
 
     intents = discord.Intents.default()
     intents.members = True
-    store = ConfigStore()
+    store = ConfigStore(db_path=config.PTERO_BOT_DB)
     bot = PteroBot(intents=intents, store=store)
 
     loop = asyncio.get_running_loop()
