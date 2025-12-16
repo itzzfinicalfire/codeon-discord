@@ -3,12 +3,12 @@ from __future__ import annotations
 import discord
 from discord import app_commands
 
-from db.store import ConfigStore
-from ptero.client import PterodactylClient
-from rbac.roles import ensure_has_role, infer_required_roles
-from ui.components import Paginator
-from ui.embeds import list_embeds, summary_embed
-from utils.errors import PermissionDenied, PteroAPIError
+from src.db.store import ConfigStore
+from src.ptero.client import PterodactylClient
+from src.rbac.roles import ensure_has_role, infer_required_roles
+from src.ui.components import Paginator
+from src.ui.embeds import list_embeds, summary_embed
+from src.utils.errors import PermissionDenied, PteroAPIError
 
 
 class Nests(app_commands.Group):

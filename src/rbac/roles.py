@@ -4,8 +4,8 @@ import discord
 from discord import Interaction
 from typing import Iterable, List
 
-from db.store import ConfigStore
-from utils.errors import PermissionDenied
+from src.db.store import ConfigStore
+from src.utils.errors import PermissionDenied
 
 SUPERADMIN = "Ptero SuperAdmin"
 OPERATOR = "Ptero Operator"

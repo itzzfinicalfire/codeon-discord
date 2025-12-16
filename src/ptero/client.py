@@ -7,8 +7,8 @@ import httpx
 from pydantic import BaseModel
 
 from src import config
-from utils.errors import PteroAPIError
-from utils.logger import get_logger
+from src.utils.errors import PteroAPIError
+from src.utils.logger import get_logger
 
 logger = get_logger(__name__)
 

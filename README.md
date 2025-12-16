@@ -29,10 +29,12 @@ A production-ready Discord bot for Pterodactyl **Application API** administratio
    ```bash
    python test_config.py
    ```
-5. Run the bot:
+5. Run the bot (installs dependencies automatically if missing):
    ```bash
-   python -m src.bot
+   python bot.py
    ```
+   When deploying on Pterodactyl, set `BOT_PY_FILE=bot.py` and `REQUIREMENTS_FILE=requirements.txt` so the panel installs
+   dependencies before launch.
 
 ### Docker
 ```
