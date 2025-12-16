@@ -105,11 +105,14 @@ class PteroBot(commands.Bot):
 
 
 async def main() -> None:
-    token = config.DISCORD_TOKEN
-    client_id = config.DISCORD_CLIENT_ID
-    if not token or not client_id:
-        logger.error("Missing DISCORD_TOKEN or DISCORD_CLIENT_ID in config.py or environment")
+    errors = config.validate_required()
+    if errors:
+        for err in errors:
+            logger.error(err)
+        logger.error("Update src/config.py or set environment variables before starting the bot.")
         sys.exit(1)
+
+    token = config.DISCORD_TOKEN
 
     intents = discord.Intents.default()
     if config.USE_PRIVILEGED_INTENTS:

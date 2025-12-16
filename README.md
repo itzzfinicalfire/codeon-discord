@@ -15,7 +15,7 @@ A production-ready Discord bot for Pterodactyl **Application API** administratio
    ```bash
    pip install -r requirements.txt
    ```
-3. Configure credentials in `src/config.py` (placeholders are provided) or set environment variables with the same names. No `.env` file is required:
+3. Configure credentials in `src/config.py` (placeholders are provided) or set environment variables with the same names. No `.env` file is required, and the bot will fail fast with clear errors if placeholders are still present:
    ```python
    # src/config.py
    DISCORD_TOKEN = "your_discord_bot_token"

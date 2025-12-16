@@ -53,6 +53,32 @@ def as_dict() -> dict[str, str]:
         "ADDITIONAL_ALLOWED_ROLE_IDS": ADDITIONAL_ALLOWED_ROLE_IDS,
     }
 
+
+def validate_required() -> list[str]:
+    """Return a list of validation errors for required settings.
+
+    This helps catch placeholder values early so the bot can fail fast with a
+    clear message instead of confusing login errors.
+    """
+
+    errors: list[str] = []
+
+    if not DISCORD_TOKEN or DISCORD_TOKEN == "your_discord_bot_token":
+        errors.append("DISCORD_TOKEN is missing or still set to the placeholder")
+
+    if not DISCORD_CLIENT_ID or DISCORD_CLIENT_ID == "your_discord_client_id":
+        errors.append("DISCORD_CLIENT_ID is missing or still set to the placeholder")
+
+    if not PTERO_BASE_URL or PTERO_BASE_URL == "https://panel.example.com":
+        errors.append("PTERO_BASE_URL is missing or still set to the placeholder")
+
+    if not PTERO_APPLICATION_API_KEY or PTERO_APPLICATION_API_KEY == "your_application_api_key":
+        errors.append(
+            "PTERO_APPLICATION_API_KEY is missing or still set to the placeholder"
+        )
+
+    return errors
+
 __all__ = [
     "DISCORD_TOKEN",
     "DISCORD_CLIENT_ID",
@@ -63,4 +89,5 @@ __all__ = [
     "PTERO_BOT_DB",
     "ADDITIONAL_ALLOWED_ROLE_IDS",
     "as_dict",
+    "validate_required",
 ]
